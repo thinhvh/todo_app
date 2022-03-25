@@ -1,0 +1,2 @@
+export const POST_SUCCESSFUL_STATUS = 201;
+export const NORMAL_SUCCESSFUL_STATUS = 200;
