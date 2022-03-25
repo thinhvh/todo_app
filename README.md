@@ -1,3 +1,9 @@
+### Published app
+
+You can test the application via link: https://thinhvh.github.io/todo_app/
+
+## If you want to run in the local, you can follow the steps below:
+
 ### `npm install`
 
 Install necessary dependencies for the application.
