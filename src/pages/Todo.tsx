@@ -10,18 +10,14 @@ import styles from './Todo.module.css';
 
 const Todo: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [firstLoad, setFirstLoad] = useState(false);
 
     useEffect(() => {
         const data = JSON.parse(localStorage.getItem('todos') || '[]');
         setTasks(data);
-        setFirstLoad(true);
     }, []);
 
     const syncDataLocalStorage = (newTasks: Task[]) => {
-        if (firstLoad) {
-            localStorage.setItem('todos', JSON.stringify(newTasks));
-        }
+        localStorage.setItem('todos', JSON.stringify(newTasks));
     }
 
     const onPatch = async (
