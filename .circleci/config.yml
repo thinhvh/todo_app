@@ -1,0 +1,58 @@
+# This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
+version: 2.1
+
+executors:
+  linux_machine:
+    machine:
+      image: ubuntu-2004:202008-01
+
+# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
+# See: https://circleci.com/docs/2.0/orb-intro/
+orbs:
+  node: circleci/node@4.7
+
+jobs:
+  build_app:
+    executor: linux_machine
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: "build react app"
+          command: npm run build
+      - save_cache:
+          key: build-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./build
+  deploy_app:
+    executor: linux_machine
+    steps:
+      - checkout
+      - restore_cache:
+          key: build-cache-
+      - restore_cache:
+          key: dependency-cache-
+      - run:
+          name: "git email"
+          command: git config --global user.email "thinh.vo511@gmail.com"
+      - run:
+          name: "git name"
+          command: git config --global user.name "thinh.vo511"
+      - run:
+          name: "deploying"
+          command: npm run deploy
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  deploy_to_github:
+    jobs:
+      - build_app
+      - deploy_app:
+          requires:
+            - build_app
